@@ -7,28 +7,30 @@ from game_of_life.infrastructure.interfaces.pattern_loader import PatternLoader
 
 
 class JSONPatternLoader(PatternLoader):
-    """Loader for JSON format patterns."""
+    """
+    Loader for JSON format patterns.
 
-    def load(self, source: str) -> Set[Position]:
+    Format: {"alive_cells": [[row, col], ...]}
+
+    """
+
+    def __init__(self, json_source: str):
+        self.json_source = json_source
+
+    def load(self) -> Set[Position]:
         """Load pattern from JSON format.
-
-        Format: {"alive_cells": [[row, col], ...]}
-
-        Args:
-            source: JSON string or file path
 
         Returns:
             Set of alive cell positions
         """
-        # Check if source is a file path
-        if os.path.isfile(source):
-            with open(source, 'r') as f:
-                data = json.load(f)
-        else:
-            data = json.loads(source)
+
+        data = json.loads(self.json_source)
+
+        if "alive_cells" not in data:
+            raise ValueError("Loaded json pattern does not contain 'alive_cells'")
 
         alive_cells = set()
-        for row, col in data.get('alive_cells', []):
+        for row, col in data['alive_cells']:
             alive_cells.add(Position(row, col))
 
         return alive_cells
