@@ -4,12 +4,6 @@ from game_of_life.infrastructure.implementations.pattern_loader.plain_text_patte
 from game_of_life.patterns import Patterns
 from game_of_life.presentation.game_of_life import GameOfLife
 
-import sys
-sys.path.append('/home/jonathan/PycharmProjects/ConwaysGameOfLife/game_of_life')
-sys.path.append('/home/jonathan/PycharmProjects/ConwaysGameOfLife')
-
-
-
 
 
 def demo():
