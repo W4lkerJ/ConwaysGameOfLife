@@ -1,21 +1,25 @@
+from typing import Optional
+
 from game_of_life.domain.cell_state import CellState
 from game_of_life.domain.grid import Grid
-from game_of_life.domain.game_rules import GameRules
+from game_of_life.domain.game_rules import GameRules, StandardRules
 
 
 class GameEngine:
     """Core game engine implementing the simulation logic."""
 
-    def __init__(self, rules: GameRules = None):
-        """Initialize the game engine.
+    def __init__(self, rules: Optional[GameRules] = None):
+        """
+        Initialize the game engine.
 
         Args:
             rules: Game rules to use (defaults to standard Conway rules)
         """
-        self.rules = rules or GameRules()
+        self.rules = rules or StandardRules()
 
     def compute_next_generation(self, grid: Grid) -> Grid:
-        """Compute the next generation of the grid.
+        """
+        Compute the next generation of the grid.
 
         Optimized algorithm that only checks relevant cells.
 

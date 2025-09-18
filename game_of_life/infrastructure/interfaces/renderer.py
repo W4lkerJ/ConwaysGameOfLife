@@ -8,7 +8,8 @@ class Renderer(ABC):
 
     @abstractmethod
     def render(self, grid: Grid, generation: int) -> None:
-        """Render the current grid state.
+        """
+        Render the current grid state.
 
         Args:
             grid: Grid to render

@@ -6,7 +6,7 @@ from typing import List
 class Position:
     """Immutable position in the grid.
 
-    Using frozen dataclass for hashability and immutability.
+    Using frozen dataclass for and immutability.
     """
     row: int
     col: int
