@@ -9,7 +9,8 @@ class ConsoleRenderer(Renderer):
     """Renderer for console/terminal output."""
 
     def __init__(self, alive_char: str = '█', dead_char: str = '·'):
-        """Initialize console renderer.
+        """
+        Initialize console renderer.
 
         Args:
             alive_char: Character to represent alive cells
@@ -23,7 +24,8 @@ class ConsoleRenderer(Renderer):
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def render(self, grid: Grid, generation: int) -> None:
-        """Render grid to console.
+        """
+        Render grid to console.
 
         Args:
             grid: Grid to render
