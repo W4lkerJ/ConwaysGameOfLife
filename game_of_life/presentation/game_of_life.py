@@ -1,14 +1,11 @@
 import time
-from typing import Optional, Dict, Tuple
+from typing import Optional, Tuple
 
 from game_of_life.domain.grid import Grid
 from game_of_life.domain.position import Position
 from game_of_life.application.game_engine import GameEngine
 from game_of_life.infrastructure.interfaces.pattern_loader import PatternLoader
-from game_of_life.infrastructure.implementations.pattern_loader.text_pattern_loader import PlainTextPatternLoader
-from game_of_life.infrastructure.implementations.pattern_loader.json_pattern_loader import JSONPatternLoader
 from game_of_life.infrastructure.interfaces.renderer import Renderer
-from game_of_life.infrastructure.implementations.console_renderer import ConsoleRenderer
 
 
 class GameOfLife:
@@ -16,12 +13,14 @@ class GameOfLife:
 
     def __init__(
             self,
-            width: int = 50,
-            height: int = 30,
-            renderer: Optional[Renderer] = None,
-            engine: Optional[GameEngine] = None
+            width: int,
+            height: int,
+            pattern_loader: PatternLoader,
+            renderer: Renderer,
+            engine: GameEngine
     ):
-        """Initialize the Game of Life simulation.
+        """
+        Initialize the Game of Life simulation.
 
         Args:
             width: Grid width
@@ -31,38 +30,34 @@ class GameOfLife:
         """
         self.width = width
         self.height = height
-        self.renderer = renderer or ConsoleRenderer()
-        self.engine = engine or GameEngine()
+        self.pattern_loader = pattern_loader
+        self.renderer = renderer
+        self.engine = engine
         self.grid = Grid(width, height, set())
         self.generation = 0
-        self.pattern_loaders: Dict[str, PatternLoader] = {
-            'txt': PlainTextPatternLoader(),
-            'json': JSONPatternLoader()
-        }
 
-    def load_pattern(self, source: str, format: str = 'txt', offset: Tuple[int, int] = (0, 0)) -> None:
-        """Load a starting pattern into the grid.
+    def load_pattern(self, offset: Tuple[int, int] = (0, 0)) -> None:
+        """
+        Load a starting pattern into the grid.
 
         Args:
-            source: Pattern source (string or file path)
-            format: Format of the pattern ('txt', 'rle', or 'json')
             offset: Position offset for placing the pattern
 
         Raises:
             ValueError: If format is not supported
         """
-        if format not in self.pattern_loaders:
-            raise ValueError(f"Unsupported format: {format}. Use one of {list(self.pattern_loaders.keys())}")
 
-        loader = self.pattern_loaders[format]
-        pattern_cells = loader.load(source)
+        pattern_cells = self.pattern_loader.load()
 
         # Apply offset and validate positions
         alive_cells = set()
         for pos in pattern_cells:
             new_pos = Position(pos.row + offset[0], pos.col + offset[1])
+
             if self.grid.is_valid_position(new_pos):
                 alive_cells.add(new_pos)
+            else:
+                raise ValueError(f"Loaded position {new_pos} is not a valid position")
 
         self.grid = Grid(self.width, self.height, alive_cells)
         self.generation = 0
